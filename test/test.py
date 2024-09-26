@@ -29,7 +29,7 @@ def connect_mqtt():
     client.on_message = on_message
 
     # Connect to the MQTT broker
-    client.connect("192.168.178.171", 1883)
+    client.connect(BROKER, 1883)
     return client
 
 def on_connect(client, userdata, flags, rc, properties):

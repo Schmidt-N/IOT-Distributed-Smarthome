@@ -117,13 +117,18 @@ def blink_led():
         time.sleep(1)
 
 def handle_callback(topic, msg):
-    print(msg)
-    #decoded = decode(msg)
-    #print(decoded)
+    #print(msg)
+    decoded = decode(msg)
+    print(decoded)
+    print(decoded["Header"])
+    
 
 def decode(msg):
+    # Konvertiert den Byte-String in einen normalen String (UTF-8 Dekodierung)
+    msg_str = msg.decode("utf-8")
+    
     # Entfernt führende und nachfolgende Leerzeichen und Zeilenumbrüche
-    lines = msg.strip().split("\n")
+    lines = msg_str.strip().split("\n")
     
     parsed_data = {
         "Header": {},
@@ -163,6 +168,7 @@ def decode(msg):
                 current_payload[key] = value
     
     return parsed_data
+
 
 # Connect and subscribe
 def mqtt_connect_sub():
