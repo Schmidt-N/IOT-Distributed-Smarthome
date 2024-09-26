@@ -8,17 +8,39 @@ from umqtt.simple import MQTTClient
 import ubinascii
 import os
 
-broker = "insert-broker-address-here"
+def load_env_file(filepath):
+    env = {}
+    try:
+        with open(filepath, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#'):
+                    key, value = line.split('=', 1)
+                    env[key.strip()] = value.strip()
+    except OSError:
+        print("Could not open the .env file")
+    return env
+
+env_vars = load_env_file('.env')
+
+WIFI_SSID = env_vars.get("WIFI_SSID")
+WIFI_PASSWORD = env_vars.get("WIFI_PASSWORD")
+BROKER_ADDRESS = env_vars.get("BROKER_ADDRESS")
+MQTT_USER = env_vars.get("MQTT_USER")
+MQTT_PASSWORD = env_vars.get("MQTT_PASSWORD")
+BROKER_PORT = env_vars.get("BROKER_PORT")
+
+#broker = "192.168.225.149"
 client_id = ubinascii.hexlify(os.urandom(6)).decode('utf-8')
 print(client_id)
-topic = b"test/topic"  # The same topic to subscribe to
-port = 1883
-mqtt_user = "user"
-mqtt_password = "password"
+topic = b"actor_heat/topic"  # The same topic to subscribe to
+#port = 1883
+#mqtt_user = "user"
+#mqtt_password = "password"
 
 # WiFi-Konfiguration
-ssid = 'insert-ssid-here'
-password = 'insert-password-here'
+#ssid = "Mark's S24+"
+#password = 'eehk4u4z6vefnqm'
 
 # LED-Pin-Konfiguration
 led_pin = machine.Pin(2, machine.Pin.OUT)
@@ -30,19 +52,19 @@ def connect_wifi():
     networks = wlan.scan()
 
     for network1 in networks:
-        ssid1 = network1[0].decode()  # SSID of the network
+        ssid = network1[0].decode()  # SSID of the network
         bssid = network1[1]          # MAC address
         channel = network1[2]        # Channel number
         rssi = network1[3]           # Signal strength
         authmode = network1[4]       # Authentication mode
     
         # Display details
-        print(f"SSID: {ssid1}, RSSI: {rssi}, Channel: {channel}, Authmode: {authmode}, bssid: {bssid}")
+        print(f"SSID: {ssid}, RSSI: {rssi}, Channel: {channel}, Authmode: {authmode}, bssid: {bssid}")
 
-    wlan.connect(ssid, password)
+    wlan.connect(WIFI_SSID, WIFI_PASSWORD)
 
     while not wlan.isconnected():
-        print(f'Verbindung zu {ssid} wird hergestellt...')
+        print(f'Verbindung zu {WIFI_SSID} wird hergestellt...')
         time.sleep(1)
 
     print('Mit WiFi verbunden:', wlan.ifconfig())
@@ -94,13 +116,62 @@ def blink_led():
         print("Turning OFF...")
         time.sleep(1)
 
-def mqtt_callback(topic, msg):
-    print("Received message:", msg, "on topic:", topic)
+def handle_callback(topic, msg):
+    print(msg)
+    #decoded = decode(msg)
+    #print(decoded)
+
+def decode(msg):
+    # Entfernt führende und nachfolgende Leerzeichen und Zeilenumbrüche
+    lines = msg.strip().split("\n")
+    
+    parsed_data = {
+        "Header": {},
+        "Payloads": []
+    }
+
+    current_section = None
+    current_payload = None
+
+    for line in lines:
+        line = line.strip()
+        
+        # Überspringe leere Zeilen oder Kommentare
+        if not line or line.startswith(";"):
+            continue
+        
+        # Überprüfe, ob es eine neue Sektion ist ([Header] oder [Payload])
+        if line.startswith("[") and line.endswith("]"):
+            section_name = line[1:-1]
+            if section_name == "Header":
+                current_section = "Header"
+            elif section_name == "Payload":
+                current_section = "Payload"
+                current_payload = {}
+                parsed_data["Payloads"].append(current_payload)
+            continue
+        
+        # Verarbeite Schlüssel-Wert-Paare
+        if "=" in line:
+            key, value = line.split("=", 1)
+            key = key.strip()
+            value = value.strip()
+            
+            if current_section == "Header":
+                parsed_data["Header"][key] = value
+            elif current_section == "Payload" and current_payload is not None:
+                current_payload[key] = value
+    
+    return parsed_data
 
 # Connect and subscribe
 def mqtt_connect_sub():
-    client = MQTTClient(client_id, broker, port=port, user=mqtt_user, password=mqtt_password)
-    client.set_callback(mqtt_callback)
+    print(BROKER_ADDRESS)
+    print(BROKER_PORT)
+    print(MQTT_USER)
+    print(MQTT_PASSWORD)
+    client = MQTTClient(client_id, BROKER_ADDRESS, port=BROKER_PORT, user=MQTT_USER, password=MQTT_PASSWORD)
+    client.set_callback(handle_callback)
     client.connect()
     client.subscribe(topic)
     print(f"Subscribed to topic: {topic}")
@@ -134,10 +205,10 @@ def main():
     #_thread.start_new_thread(mqtt_connect_sub, ())
     # Main function
     
-    _thread.start_new_thread(mqtt_server, ())
+    #_thread.start_new_thread(mqtt_server, ())
    
     # Continue blinking the LED in the main thread
-    blink_led()
+    mqtt_server()
 
 if __name__ == "__main__":
     main()
