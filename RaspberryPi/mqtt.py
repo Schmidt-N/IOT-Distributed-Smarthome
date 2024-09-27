@@ -58,7 +58,7 @@ def on_message(client, userdata, msg):
 
     print(f"Payload Type: {payload_type}, Payload Value: {payload_value}")
 
-    if payload_type == 'Temperature' and int(payload_value) > 2:
+    if payload_type == 'Temperature':
         print(payload_value)
         header_data = {
             "Sender": "RaspberryPi",
@@ -67,7 +67,7 @@ def on_message(client, userdata, msg):
 
         payload_data = {
             "Type": "Command",
-            "Value": "ON"
+            "Value": "ON" if int(payload_value) <= 25 else "OFF"
         }
 
         command_message = encode(header_data, payload_data)
