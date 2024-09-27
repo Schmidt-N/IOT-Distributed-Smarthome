@@ -1,5 +1,4 @@
 from init import *
-from pypeg import *
 from mqtt import *
 
 def main():

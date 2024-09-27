@@ -1,4 +1,6 @@
-def build_message(header, payloads):
+from pypeg import *
+
+def encode(header, payloads):
     """
     Baut eine Nachricht im gewünschten Format zusammen.
     

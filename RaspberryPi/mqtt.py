@@ -1,5 +1,5 @@
 import paho.mqtt.client as mqtt
-from messages import *
+from parser import *
 
 def connect_mqtt(CLIENT_ID, MQTT_USER, MQTT_PASSWORD, BROKER_ADDRESS, BROKER_PORT):
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=CLIENT_ID)
@@ -47,6 +47,6 @@ def on_message(client, userdata, msg):
                {"Type": "Command", "Value": "TurnOn"}
            ]
 
-           command_message = build_message(header_data, payload_data)
+           command_message = encode(header_data, payload_data)
            client.publish("action_heat/topic", command_message)
            print(f"Nachricht an action_heat/topic gesendet:\n{command_message}")
