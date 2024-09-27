@@ -5,7 +5,7 @@ def decode(msg):
     
     parsed_data = {
         "Header": {},
-        "Payloads": []
+        "Payload": {}
     }
 
     current_section = None
@@ -23,8 +23,6 @@ def decode(msg):
                 current_section = "Header"
             elif section_name == "Payload":
                 current_section = "Payload"
-                current_payload = {}
-                parsed_data["Payloads"].append(current_payload)
             continue
         
         if "=" in line:
@@ -34,7 +32,7 @@ def decode(msg):
             
             if current_section == "Header":
                 parsed_data["Header"][key] = value
-            elif current_section == "Payload" and current_payload is not None:
-                current_payload[key] = value
+            elif current_section == "Payload":
+                parsed_data["Payload"][key] = value
     
     return parsed_data

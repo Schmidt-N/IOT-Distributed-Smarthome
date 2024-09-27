@@ -35,18 +35,17 @@ def on_message(client, userdata, msg):
     for payload in payloads:
         print(f"Payload Type: {payload['Type']}, Payload Value: {payload['Value']}")
 
-    for payload in payloads:
-       if payload['Type'] == 'Temperature' and float(payload['Value']) > 25:
-           header_data = {
-               "Sender": "RaspberryPi",
-               "Receiver": "ESP32-Switch",
-               "MessageID": "456"
-           }
 
-           payload_data = [
-               {"Type": "Command", "Value": "TurnOn"}
-           ]
+    if payload['Type'] == 'Temperature' and float(payload['Value']) > 25:
+        header_data = {
+            "Sender": "RaspberryPi",
+            "Topic": "actor_heat/topic"
+        }
 
-           command_message = encode(header_data, payload_data)
-           client.publish("action_heat/topic", command_message)
-           print(f"Nachricht an action_heat/topic gesendet:\n{command_message}")
+        payload_data = [
+            {"Type": "Command", "Value": "ON"}
+        ]
+
+        command_message = encode(header_data, payload_data)
+        client.publish("action_heat/topic", command_message)
+        print(f"Nachricht an action_heat/topic gesendet:\n{command_message}")

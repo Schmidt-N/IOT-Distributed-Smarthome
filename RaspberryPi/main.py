@@ -11,11 +11,10 @@ def main():
         "Topic": "actor_heat/topic"
     }
 
-    payload_data = [
-        {"Type": "Command", "Value": "ON"}
-    ]
+    payload_data = {"Type": "Command",
+                     "Value": "ON"}
 
-    message = build_message(header_data, payload_data)
+    message = encode(header_data, payload_data)
     result = client.publish(TOPIC_ACTOR, message)
 
     status = result.rc

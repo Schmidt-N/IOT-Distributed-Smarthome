@@ -1,6 +1,6 @@
 from pypeg import *
 
-def encode(header, payloads):
+def encode(header, payload):
     """
     Baut eine Nachricht im gewünschten Format zusammen.
     
@@ -12,9 +12,10 @@ def encode(header, payloads):
     for key, value in header.items():
         message += f"{key}={value}\n"
     
-    for payload in payloads:
-        message += "\n[Payload]\n"
-        for key, value in payload.items():
-            message += f"{key}={value}\n"
+    message += "\n[Payload]\n"
+    for key, value in payload.items():
+        message += f"{key}={value}\n"
+
+    print(message)
     
     return message.strip()

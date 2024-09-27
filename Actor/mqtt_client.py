@@ -10,10 +10,10 @@ print("Client-ID:", client_id)
 
 def handle_callback(topic, msg):
     decoded = decode(msg)
-    print(decoded)
-    print(decoded["Header"])
-    web_server.message = decoded["Header"]
-    #web_server.insert_message()
+    if(decoded["Payload"]["Type"] == "Command"):
+        web_server.message = decoded["Payload"]["Value"] #TODO schöner
+    else:
+        web_server.message = "Type wasn't a Command: \n" + str(decoded)
 
 def mqtt_connect_sub(topic, broker_address, broker_port, user, password):
     client = MQTTClient(client_id, broker_address, port=broker_port, user=user, password=password)
