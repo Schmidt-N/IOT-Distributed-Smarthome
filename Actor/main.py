@@ -1,4 +1,3 @@
-# main.py -- put your code here!
 import network
 import socket
 import time
