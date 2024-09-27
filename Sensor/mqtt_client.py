@@ -28,8 +28,7 @@ def mqtt_client(topic, broker_address, broker_port, user, password):
         random_temp = random.randint(0, 30)
 
         header_data = {
-            "Sender": "ESP32-Sensor",
-            "Topic": topic
+            "Sender": "ESP32-Sensor"
         }
 
         payload_data = {

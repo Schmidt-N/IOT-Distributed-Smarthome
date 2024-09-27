@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+import ast
 from parser import *
 
 def connect_mqtt(CLIENT_ID, MQTT_USER, MQTT_PASSWORD, BROKER_ADDRESS, BROKER_PORT):
@@ -22,30 +23,54 @@ def on_publish(client, userdata, mid, reason_code, properties):
     print("Message Published with ID:", mid)
 
 def on_message(client, userdata, msg):
-    print(f"Nachricht erhalten: {msg.payload.decode()}")
+    #print(f"Nachricht erhalten: {msg.payload.decode()}")
+    
+    try:
+        message = parse(msg.payload.decode(), Message)
+    except Exception as e:
+        print(f"Fehler beim Parsen der Nachricht: {e}")
+        return
+    
+    #print("Geparste Nachricht:", message.header.sender)
 
-    message = parse(msg.payload.decode(), Message)
+    header = None
+    payload = None
 
-    sender = message["Header"]["Sender"]
-    message_id = message["Header"]["MessageID"]
-    payloads = message["Payload"]
+    if isinstance(message.header, Header):
+        header = message.header
+    
+    if isinstance(message.payload, Payload):
+        payload = message.payload
 
-    print(f"Sender: {sender}, MessageID: {message_id}")
+    if not header:
+        print("Kein Header gefunden")
+        return
+    if not payload:
+        print("Keine Payload gefunden")
+        return
 
-    for payload in payloads:
-        print(f"Payload Type: {payload['Type']}, Payload Value: {payload['Value']}")
+    sender = header.sender
 
+    print(f"Sender: {sender}")
 
-    if payload['Type'] == 'Temperature' and float(payload['Value']) > 25:
+    payload_type = payload.type
+    payload_value = payload.value
+
+    print(f"Payload Type: {payload_type}, Payload Value: {payload_value}")
+
+    if payload_type == 'Temperature' and int(payload_value) > 2:
+        print(payload_value)
         header_data = {
             "Sender": "RaspberryPi",
             "Topic": "actor_heat/topic"
         }
 
-        payload_data = [
-            {"Type": "Command", "Value": "ON"}
-        ]
+        payload_data = {
+            "Type": "Command",
+            "Value": "ON"
+        }
 
         command_message = encode(header_data, payload_data)
-        client.publish("action_heat/topic", command_message)
-        print(f"Nachricht an action_heat/topic gesendet:\n{command_message}")
+        client.publish("actor_heat/topic", command_message)
+        print(f"Nachricht an actor_heat/topic gesendet:\n{command_message}")
+
