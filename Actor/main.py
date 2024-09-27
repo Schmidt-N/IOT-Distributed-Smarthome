@@ -1,8 +1,5 @@
-import _thread
-
 from env_loader import load_env_file
 from wifi_connector import connect_wifi
-from web_server import web_server
 from mqtt_client import mqtt_client
 
 env_vars = load_env_file('.env')
@@ -19,9 +16,6 @@ topic = b"actor_heat/topic"
 def main():
     ip_config = connect_wifi(WIFI_SSID, WIFI_PASSWORD)
     print("IP-Adresse des ESP32:", ip_config[0])
-
-    _thread.start_new_thread(web_server, ())
-
     mqtt_client(topic, BROKER_ADDRESS, BROKER_PORT, MQTT_USER, MQTT_PASSWORD)
 
 if __name__ == "__main__":

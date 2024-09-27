@@ -2,6 +2,8 @@ from umqtt.simple import MQTTClient
 import ubinascii
 import os
 from parser import decode
+import _thread
+import web_server
 
 client_id = ubinascii.hexlify(os.urandom(6)).decode('utf-8')
 print("Client-ID:", client_id)
@@ -10,6 +12,8 @@ def handle_callback(topic, msg):
     decoded = decode(msg)
     print(decoded)
     print(decoded["Header"])
+    web_server.message = decoded["Header"]
+    #web_server.insert_message()
 
 def mqtt_connect_sub(topic, broker_address, broker_port, user, password):
     client = MQTTClient(client_id, broker_address, port=broker_port, user=user, password=password)
@@ -25,6 +29,8 @@ def mqtt_client(topic, broker_address, broker_port, user, password):
     except OSError as error:
         print(f"Error connecting to broker: {error}")
         return
+
+    _thread.start_new_thread(web_server.web_server, ())
 
     try:
         while True:

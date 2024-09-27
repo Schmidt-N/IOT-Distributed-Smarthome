@@ -1,5 +1,7 @@
 import socket
 
+message = ""
+
 def handle_client(client_socket):
     request = client_socket.recv(1024)
     print('Request:', request)
@@ -11,7 +13,7 @@ HTTP/1.1 200 OK
 <html>
     <head><title>ESP32 LED Control</title></head>
     <body>
-        <h1>123</h1>
+        <h1>{message}</h1>
     </body>
 </html>
 """
