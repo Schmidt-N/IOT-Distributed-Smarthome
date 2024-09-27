@@ -25,18 +25,16 @@ def mqtt_client(topic, broker_address, broker_port, user, password):
     _thread.start_new_thread(web_server.web_server, ())
 
     while (True):
-        random_on = random.randint(0, 1)
+        random_temp = random.randint(0, 30)
 
         header_data = {
             "Sender": "ESP32-Sensor",
-            "Topic": "actor_heat/topic"
+            "Topic": topic
         }
 
-        value = "ON" if random_on == 1 else "OFF"
-
         payload_data = {
-            "Type": "Command",
-            "Value": value 
+            "Type": "Temperature",
+            "Value": random_temp 
         }
 
         message = encode(header_data, payload_data)
