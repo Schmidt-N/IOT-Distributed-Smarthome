@@ -1,18 +1,28 @@
 from pypeg2 import *
 
-def number():
-    return re.compile(r"-?\d+(.\d+)?")
+class String(str):
+    grammar = re.compile(r"[a-zA-Z0-9-]+")
 
-def custom_name():
-    return re.compile(r"[a-zA-Z0-9-]+")
+class Number(int):
+    grammar = re.compile(r"-?\d+(.\d+)?")
+
+class Key(Namespace):
+    grammar = attr("key", String)
+
+class ValueString(Namespace):
+    grammar = attr("value", String)
+
+class ValueNumber(Namespace):
+    grammar = attr("number", Number)
 
 class Header(Namespace):
     grammar = "[Header]", endl, \
-              custom_name(),"=", attr("sender", custom_name()), endl
+              String,"=", attr("sender", String), endl
 
 class Payload(Namespace):
     grammar = "[Payload]", endl, \
-              custom_name(),"=", attr("value", number()), endl, \
-              custom_name(),"=", attr("type", custom_name()), endl
+              String,"=", attr("value", Number), endl, \
+              String,"=", attr("type", String), endl
+
 class Message(Namespace):
     grammar = attr("header",Header), attr("payload", Payload)
