@@ -4,6 +4,7 @@ import os
 from parser import decode
 import _thread
 import web_server
+from blink_led import turn_off, turn_on
 
 client_id = ubinascii.hexlify(os.urandom(6)).decode('utf-8')
 print("Client-ID:", client_id)
@@ -11,7 +12,16 @@ print("Client-ID:", client_id)
 def handle_callback(topic, msg):
     decoded = decode(msg)
     if(decoded["Payload"]["Type"] == "Command"):
-        web_server.message = decoded["Payload"]["Value"] #TODO schöner
+        message = decoded["Payload"]["Value"]#TODO schöner
+        web_server.message = message
+
+        if message is "ON":
+            turn_on()
+        elif message is "OFF":
+            turn_off()
+        else:
+            web_server.message = "Message could not be read"
+
     else:
         web_server.message = "Type wasn't a Command: \n" + str(decoded)
 
