@@ -1,6 +1,6 @@
 from env_loader import load_env_file
 from wifi_connector import connect_wifi
-from mqtt_client import mqtt_client
+from web_server import web_server
 
 env_vars = load_env_file('.env')
 
@@ -16,7 +16,7 @@ topic = b"sensor_heat/topic"
 def main():
     ip_config = connect_wifi(WIFI_SSID, WIFI_PASSWORD)
     print("IP-Adresse des ESP32:", ip_config[0])
-    mqtt_client(topic, BROKER_ADDRESS, BROKER_PORT, MQTT_USER, MQTT_PASSWORD)
+    web_server(topic, BROKER_ADDRESS, BROKER_PORT, MQTT_USER, MQTT_PASSWORD)
 
 if __name__ == "__main__":
     main()
