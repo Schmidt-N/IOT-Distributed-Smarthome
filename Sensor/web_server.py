@@ -1,5 +1,7 @@
 import socket
 from mqtt_client import mqtt_client
+from blink_led import blink_led
+import _thread
 
 message = ""
 
@@ -20,6 +22,7 @@ def handle_client(client_socket, topic, BROKER_ADDRESS, BROKER_PORT, MQTT_USER, 
                 print("Error:", temperature, "ist nicht zwischen -273°C und 100°C!")
             else:
                 mqtt_client(topic, BROKER_ADDRESS, BROKER_PORT, MQTT_USER, MQTT_PASSWORD, temperature)
+                _thread.start_new_thread(blink_led, ())
 
         except ValueError:
             print("Error:", input_value, "ist keine Zahl!")
