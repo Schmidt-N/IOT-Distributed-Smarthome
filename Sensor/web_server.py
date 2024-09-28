@@ -15,6 +15,7 @@ HTTP/1.1 200 OK
     <body>
         <h1>{message}</h1>
     </body>
+    <script>setTimeout(() => location.reload(), 5000)</script>
 </html>
 """
     client_socket.send(response)
