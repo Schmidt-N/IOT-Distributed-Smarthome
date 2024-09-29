@@ -11,13 +11,18 @@ HTTP/1.1 200 OK
 
 <!DOCTYPE html>
 <html>
-    <head><title>ESP32 LED Control</title></head>
-    <body>
-        <h1>{message}</h1>
+    <head>
+        <title>ESP32 LED Control</title>
+    </head>
+    <body style="font-family: Arial, sans-serif; text-align: center; background-color: #f0f0f0; margin-top: 50px;">
+        <h1 style="color: #4CAF50; font-size: 24px;">{message}</h1>
     </body>
-    <script>setTimeout(() => location.reload(), 5000)</script>
+    <script>
+        setTimeout(() => location.reload(), 5000);
+    </script>
 </html>
 """
+
     client_socket.send(response)
     client_socket.close()
 

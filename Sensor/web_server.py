@@ -29,14 +29,18 @@ def handle_client(client_socket, topic, BROKER_ADDRESS, BROKER_PORT, MQTT_USER, 
         
     html = f"""<!DOCTYPE html>
 <html>
-    <head> <title>ESP32 Temperatureingabe</title> </head>
-    <body>
-        <h1>Temperatur eingeben (in &deg;C)</h1>
+    <head> 
+        <title>ESP32 Temperatureingabe</title> 
+    </head>
+    <body style="font-family: Arial, sans-serif; text-align: center; background-color: #f0f0f0; margin: 50px;">
+        <h1 style="color: #333;">Temperatur eingeben (in &deg;C)</h1>
         <form action="/" method="get">
-            <input type="number" name="input">
-            <input type="submit" value="Absenden">
+            <input type="number" name="input" style="padding: 10px; font-size: 16px; width: 200px;">
+            <input type="submit" value="Absenden" style="padding: 10px 20px; font-size: 16px; margin-left: 10px;">
         </form>
-        <p>Zuletzt eingegebene Temperatur: {input_value}</p>
+        <p style="color: #666; font-size: 18px; margin-top: 20px;">
+            Zuletzt eingegebene Temperatur: {input_value}
+        </p>
     </body>
 </html>
 """
