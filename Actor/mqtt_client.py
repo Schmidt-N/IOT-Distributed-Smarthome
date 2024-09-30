@@ -11,8 +11,8 @@ print("Client-ID:", client_id)
 
 def handle_callback(topic, msg):
     decoded = decode(msg)
-    if(decoded["Payload"]["Type"] == "Command"):
-        message = decoded["Payload"]["Value"]#TODO schöner
+    if "Payload" in decoded and "Type" in decoded["Payload"] and decoded["Payload"]["Type"] == "Command" and "Value" in decoded["Payload"]:
+        message = decoded["Payload"]["Value"]
         web_server.message = message
 
         if message is "ON":
