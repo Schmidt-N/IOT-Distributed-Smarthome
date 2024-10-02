@@ -36,6 +36,21 @@ After that, you can write your Python code inside the ```main.py```, which is th
 
 After uploading the code you can press the reset button on the device itself or the "Hard reset device" option in the three dots menu. To stop the device from running the script, press the "Stop script" option again. Now you should be able to upload you updated code.
 
+## Environment variables
+Before flashing the ESP32 or using the Raspberry Pi script with the code in this repository, following environment variables should be set into a
+```.env``` file in the respective folders.
+For Sensor and Actor
+```
+WIFI_SSID=<name_of_used_wifi>
+WIFI_PASSWORD=<password_of_used_wifi>
+BROKER_ADDRESS=<address_of_mqtt_broker>
+BROKER_PORT=<port_of_mqtt_broker>
+MQTT_USER=<username_of_mqtt_broker>
+MQTT_PASSWORD=<password_of_mqtt_broker>
+```
+
+For the Raspberry code only ```WIFI_SSID```, ```WIFI_PASSWORD```, ```MQTT_USER``` and ```MQTT_PASSWORD``` need to be set.
+
 ## Installation of Mosquitto MQTT-Broker on Debian based systems
 
 ### Install Mosquitto
