@@ -9,7 +9,6 @@ def decode(msg):
     }
 
     current_section = None
-    current_payload = None
 
     for line in lines:
         line = line.strip()
